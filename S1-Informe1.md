@@ -27,121 +27,18 @@ Se siguió un procedimiento estructurado en etapas, inspirado en técnicas de ev
 #### Tabla Comparativa de Respuestas Iniciales
 
 | LLM          | Resumen de Respuesta Principal                                                                 | Alucinaciones Subrayadas y Clasificadas |
-|--------------|----------------------------------------------------------------------------------------|-----------------------------------------|
-| **ChatGPT** | Perfecto 🚀 Te explico de manera clara y organizada los **métodos que Nmap usa para el descubrimiento de hosts (Host Discovery)**, es decir, cómo detecta qué máquinas están “vivas” en una red:
+|--------------|-----------------------------------------------------------------------------------------------|-----------------------------------------|
+| **ChatGPT** | # 🔎 Métodos de Descubrimiento de Hosts en Nmap<br><br>**ICMP Echo Request (`-PE`)** → Envía paquetes ICMP tipo *Echo Request* (como `ping`). Si hay *Echo Reply*, el host está activo. **Ejemplo:** `nmap -PE <objetivo>`. **Ventaja:** sencillo y rápido. **Desventaja:** firewalls suelen bloquearlo → falsos negativos.<br><br>**ICMP Timestamp (`-PP`) / Netmask (`-PM`)** → Solicitudes ICMP menos comunes. **Ejemplo:** `nmap -PP <objetivo>` o `nmap -PM <objetivo>`. **Ventaja:** puede evadir filtros. **Desventaja:** algunos sistemas no responden.<br><br>**TCP SYN Ping (`-PS`)** → Envía SYN a puertos (80/443 por defecto). Si responde SYN/ACK o RST, host activo. **Ejemplo:** `nmap -PS22,80,443 <objetivo>`. **Ventaja:** difícil de filtrar. **Desventaja:** puede alertar IDS.<br><br>**TCP ACK Ping (`-PA`)** → Envía ACK; si recibe RST, host activo. **Ejemplo:** `nmap -PA80,443 <objetivo>`. **Ventaja:** funciona si SYN está bloqueado.<br><br>**UDP Ping (`-PU`)** → Envía datagramas UDP. Respuesta ICMP “Port Unreachable” confirma host vivo. **Ejemplo:** `nmap -PU53,123,161 <objetivo>`.<br><br>**Escaneo ARP (`-PR`)** → Solicitudes ARP en LAN. Muy rápido y confiable.<br><br>**Sin ping (`-Pn`)** → Omite descubrimiento, asume todos activos.<br><br>**Privilegios:** Root permite paquetes RAW; usuario normal usa TCP connect(). | Ninguna evidente. (Clasificación: N/A) |
+| **Grok**    | Nmap utiliza **ICMP Echo**, **SYN/ACK pings**, **ARP en LAN**, **Timestamp y Netmask ICMP**, además de `-Pn` para omitir ping. Describe el uso de `-sn` para descubrimiento sin escaneo de puertos. Incluye también menciones a traceroute y técnicas avanzadas como spoofing, fragmentación y ajustes de timeout. | - "Traceroute como método de descubrimiento": Alucinación lógica (es para rutas, no discovery principal).<br>- "DNS para identificar hosts activos": Alucinación factual (DNS resuelve nombres, no confirma actividad).<br>- "Spoofing (--source-address), Fragmentación (-f), Timeout (--host-timeout) como técnicas de descubrimiento": Alucinación factual (son opciones generales, no específicas de discovery).<br>Clasificación: Factual + Lógica. |
+| **Claude**  | Explica **ICMP Echo/TS/Mask**, **TCP SYN/ACK**, **UDP Ping**, **SCTP INIT**, **IP Protocol Ping**, **ARP en LAN**, y menciona resolución DNS inversa pero aclarando que no confirma host vivo. Incluye opciones `-sn`, `-Pn`, `-PS`, `-PA`, `-PU`, `-PY`, `-PE/PP/PM` y detalla la estrategia combinada por defecto de Nmap. | Ninguna evidente. (Clasificación: N/A) |
+| **MetaAI**  | Lista **ARP Scan**, **ICMP Echo (-PE)**, **TCP SYN (-PS)**, **TCP ACK (-PA)**, **UDP Ping (-PU)**, **ICMP Timestamp (-PP)**, **ICMP Address Mask (-PM)**, y menciona descubrimiento con otros protocolos (-PO). Concluye que Nmap permite combinar métodos para mayor precisión. | Ninguna evidente. (Clasificación: N/A) |
+| **Gemini 2.5 Pro** | Explicación extensa y narrativa de cómo Nmap usa **ARP en LAN**, **ICMP Echo y Timestamp**, **TCP SYN/ACK**, **UDP Ping**, con ejemplos de comandos y énfasis en el comportamiento por defecto para usuarios con/sin root. | Ninguna evidente. (Clasificación: N/A) |
+| **MistralAI** | Lista **ICMP Echo**, **TCP SYN**, **TCP ACK**, **UDP Ping**, **ARP**, **IP Protocol Ping**, **List Scan**, e incluye resolución DNS e inverse DNS (aunque estas no confirman host vivo) y "Broadcast Ping". Incluye tabla de opciones de Nmap (-PE, -PS, -PA, -PU, -PR, -PP, -PM, -PO, -n, -R). | - "DNS Resolution/Inverse DNS para identificar hosts activos": Alucinación lógica.<br>- "Broadcast Ping (Ping Sweep)": Alucinación factual (Nmap usa sondas unicast, no broadcast general).<br>Clasificación: Factual + Lógica. |
+| **Falcon**  | Explica **ICMP Echo**, **TCP SYN/Connect**, **ACK**, **UDP**, **IP Protocol** y **ARP**, pero mezcla esto con escaneos de puertos (-sS, -sT) y menciona "DNS Scan" como descubrimiento. | - Confunde port scans (-sS, -sT, -sA, -sU, -sO) con discovery: Alucinación factual.<br>- "DNS Scan para descubrir hosts": Alucinación lógica.<br>Clasificación: Factual + Lógica. |
+| **Perplexity** | Resumen breve: menciona **TCP SYN (-PS)**, **UDP (-PU)**, **-Pn** para omitir ping, combinación de técnicas, y uso de `-sn` para solo descubrimiento. | Ninguna evidente. (Clasificación: N/A) |
+| **Qwen**   | Describe los métodos clásicos de descubrimiento de Nmap: **ICMP**, **TCP SYN/ACK**, **UDP**, **ARP**, `-Pn`, combinaciones de técnicas, e incluye ejemplos de uso. | Ninguna evidente. (Clasificación: N/A) |
+| **Copilot** | Enumera los métodos estándar: **ICMP Echo**, **TCP SYN/ACK**, **UDP**, **ARP**, menciona `-Pn` y `-sn`, con explicaciones básicas de cada uno. | Ninguna evidente. (Clasificación: N/A) |
 
----
-
-# 🔎 Métodos de Descubrimiento de Hosts en Nmap
-
-## 1. **ICMP Echo Request (`ping` clásico)**
-
-* Nmap envía paquetes ICMP tipo **Echo Request** (como el comando `ping`).
-* Si el host responde con un **Echo Reply**, se considera activo.
-* Ejemplo:
-
-  ```bash
-  nmap -PE <objetivo>
-  ```
-* 🔸 Limitación: muchos firewalls bloquean este tipo de paquetes, así que puede dar **falsos negativos**.
-
----
-
-## 2. **ICMP Timestamp & Netmask**
-
-* Variantes de ICMP menos comunes que pueden eludir filtros.
-* **`-PP` (Timestamp request):** envía una solicitud de hora al host.
-* **`-PM` (Netmask request):** pide información de máscara de red.
-* Si responden, el host se marca como activo.
-
----
-
-## 3. **TCP SYN Ping**
-
-* Envia un paquete TCP con el flag **SYN** (inicio de conexión) hacia un puerto específico (por defecto 80 o 443).
-* Si recibe una respuesta **SYN/ACK**, el host está vivo.
-* Si recibe **RST**, también indica que el host existe (aunque el puerto esté cerrado).
-* Ejemplo:
-
-  ```bash
-  nmap -PS22,80,443 <objetivo>
-  ```
-
----
-
-## 4. **TCP ACK Ping**
-
-* Envía un paquete TCP con el flag **ACK**.
-* Si el host responde con un **RST**, significa que está activo.
-* Útil cuando un firewall deja pasar ACKs pero no SYNs.
-* Ejemplo:
-
-  ```bash
-  nmap -PA80,443 <objetivo>
-  ```
-
----
-
-## 5. **UDP Ping**
-
-* Envía un datagrama UDP vacío (o con payload simple) a un puerto.
-* Si el host responde con **ICMP Port Unreachable**, significa que está vivo.
-* Si responde con UDP, también indica que existe.
-* Ejemplo:
-
-  ```bash
-  nmap -PU53,123,161 <objetivo>
-  ```
-
----
-
-## 6. **Escaneo ARP (solo en redes locales)**
-
-* Si estás en una LAN, Nmap usa ARP para preguntar directamente qué dispositivos responden.
-* Muy rápido y confiable, porque ARP no se puede filtrar fácilmente en redes locales.
-* Ejemplo:
-
-  ```bash
-  nmap -PR 192.168.1.0/24
-  ```
-
----
-
-## 7. **Sin ping (asumir que todos están activos)**
-
-* Opción **`-Pn`**: Nmap **no hace descubrimiento de host**, asume que todos están activos y pasa directo al escaneo de puertos.
-* Útil cuando los pings están bloqueados.
-* Ejemplo:
-
-  ```bash
-  nmap -Pn <objetivo>
-  ```
-
----
-
-# ⚙️ Privilegios y Métodos
-
-* **Usuarios con privilegios (root/admin):** pueden enviar paquetes **RAW** (SYN, ACK, UDP, ICMP personalizados).
-* **Usuarios sin privilegios:** solo pueden usar **conexiones TCP completas (connect())**, más lentas y menos discretas.
-
----
-
-📌 **Resumen:**
-Nmap ofrece múltiples técnicas para descubrir hosts activos, desde los clásicos **ICMP pings** hasta métodos más evasivos como **TCP ACK/SYN**, **UDP probes** y **ARP en LAN**. Según los filtros de red y privilegios del usuario, se elige la técnica más efectiva.
-
----
-
-¿Quieres que te arme un **cuadro comparativo resumido** con cada método, su **ventaja, desventaja y cuándo usarlo** (como para examen)?
- | Ninguna evidente. (Clasificación: N/A) |
-| **Grok**    | Describe 8 métodos: Ping Scan (con subtipos), Sin Ping, ARP, Traceroute, Lista, DNS, Protocolos Específicos, Avanzadas (Spoofing, Fragmentación). | - "Traceroute como método de descubrimiento": Alucinación lógica (es para rutas, no discovery principal).<br>- "DNS para identificar hosts activos": Alucinación factual (DNS resuelve nombres, no confirma actividad).<br>- "Spoofing (--source-address), Fragmentación (-f), Timeout (--host-timeout) como técnicas de descubrimiento": Alucinación factual (son opciones generales, no específicas de discovery).<br>Clasificación: Factual (confusión de opciones) + Lógica (inferencia errónea). |
-| **Claude**  | Describe 8 métodos: ICMP (subtipos), TCP SYN, ACK, UDP, SCTP, IP Protocol, ARP, DNS. | Ninguna evidente. (Clasificación: N/A) |
-| **MetaAI**  | Describe 8 métodos: ARP, ICMP Echo, TCP SYN, ACK, UDP, ICMP Timestamp, Address Mask, IP Protocol. | Ninguna evidente. (Clasificación: N/A) |
-| **Gemini 2.5 Pro** | Describe 3 métodos principales: ARP, ICMP, TCP/UDP (subtipos SYN, ACK, UDP). Comportamiento predeterminado. | Ninguna evidente. (Clasificación: N/A) |
-| **MistralAI** | Describe 10 métodos: ICMP, TCP SYN, ACK, UDP, ARP, IP Protocol, List Scan, DNS Resolution, Inverse DNS, Broadcast Ping. | - "DNS Resolution/Inverse DNS para identificar hosts activos": Alucinación lógica (no confirma actividad).<br>- "Broadcast Ping (Ping Sweep)": Alucinación factual (Nmap usa sondas individuales, no broadcast general; confusión con directed-broadcast obsoleto).<br>Clasificación: Factual + Lógica. |
-| **Falcon**  | Describe 8 métodos: Ping Scan, TCP SYN, Connect, ACK, UDP, IP Protocol, ARP, DNS Scan. | - Confunde port scans (-sS, -sT, -sA, -sU, -sO) con discovery: Alucinación factual (estos son para puertos/protocolos, no discovery; discovery usa -P*).<br>- "DNS Scan para descubrir hosts": Alucinación lógica (no es discovery).<br>Clasificación: Factual (confusión de comandos) + Lógica. |
-| **Perplexity** | Describe 5 métodos: TCP Ping, UDP Ping, Omitir Ping, Combinación, Ping Básico (-sn). | Ninguna evidente. (Clasificación: N/A) |
-| **Qwen**   | Describe 8 métodos: ICMP Echo, ARP, TCP SYN, ACK, UDP, SCTP, ICMP Timestamp/Address Mask, Sin Ping. | Ninguna evidente. (Clasificación: N/A) |
-| **Copilot** | Describe 7 métodos: ICMP Echo, TCP SYN, ACK, UDP, ARP, Sin Ping, Escaneo Rápido (-sn). Tabla incluida. | Ninguna evidente. (Clasificación: N/A) |
 
 ### Etapa 2. Aplicación de ingeniería de prompts
 1. Rediseñe el prompt aplicando estrategias:
