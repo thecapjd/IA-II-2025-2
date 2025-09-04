@@ -173,7 +173,7 @@ Desarrollo de sistemas adaptativos y de bajo consumo de recursos para la detecci
 
 ---
 
-## 6. Definiciones Adicionales
+## Definiciones Adicionales
 
 ### Variable Independiente
 La implementación del sistema de detección adaptativo propuesto. Esta variable se compone de tres elementos principales que se manipulan y aplican al tráfico de red:
