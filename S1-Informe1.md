@@ -108,8 +108,8 @@ Se siguió un procedimiento estructurado en etapas, inspirado en técnicas de ev
 
 2. Categorías predominantes
 
-   - **Factuales:** 65% del total — Principalmente confusiones de comandos de Nmap (usar `-s*` como discovery, considerar DNS o parámetros generales como spoofing/fragmentación como métodos de host discovery).
-   - **Lógicas:** 35% del total — Inferencias incorrectas (por ejemplo, considerar que resolver DNS confirma actividad, o que traceroute es discovery).
+   - **Factuales:** 75% del total — Principalmente confusiones de comandos de Nmap (usar `-s*` como discovery, considerar DNS o parámetros generales como spoofing/fragmentación como métodos de host discovery).
+   - **Lógicas:** 25% del total — Inferencias incorrectas (por ejemplo, considerar que resolver DNS confirma actividad, o que traceroute es discovery).
 
 2. Analice qué estrategias de ingeniería de prompts redujeron errores.
    - Contextualización (rol de profesor) y especificidad (6 métodos exactos) limitaron respuestas amplias, reduciendo alucinaciones (e.g., Grok eliminó DNS/traceroute).
@@ -128,9 +128,9 @@ Se siguió un procedimiento estructurado en etapas, inspirado en técnicas de ev
 - Conclusiones críticas sobre la fiabilidad de cada LLM y la importancia del diseño de prompts.
 
 ### Resultados Obtenidos
-- **Alucinaciones identificadas:** 8 en total. Predominan las **factuales** (65%), especialmente en **Falcon** (confusión de `-s*` con `-P*`) y **Grok** (incluir DNS/spoofing/fragmentación como discovery). También se detectaron **lógicas** (35%) en Grok y MistralAI (DNS/traceroute interpretados como confirmación de actividad o discovery principal).
-- **Precisión comparativa:** ChatGPT, Claude, Qwen, MetaAI, Gemini, Perplexity y Copilot >90% precisos (sin alucinaciones relevantes); **Falcon <70%** (por confusión de comandos y mezcla de categorías). Grok y MistralAI en rango intermedio (75-85%).
-- **Validación en BDI:** 80% de las afirmaciones fueron confirmadas. Las alucinaciones fueron refutadas (por ejemplo, DNS y traceroute no son métodos de host discovery).
+- **Alucinaciones identificadas:** 8 en total. Predominan las **factuales** (75%), especialmente en **Falcon** (confusión de `-s*` con `-P*`) y **Grok** (incluir DNS/spoofing/fragmentación como discovery). También se detectaron **lógicas** (25%) en Grok y MistralAI (DNS/traceroute interpretados como confirmación de actividad o discovery principal).
+- **Precisión comparativa:** ChatGPT, Claude, Qwen, MetaAI, Gemini, Perplexity y Copilot > precisos (sin alucinaciones relevantes); **Falcon** (por confusión de comandos y mezcla de categorías). Grok y MistralAI en rango intermedio.
+- **Validación en BDI:**  de las afirmaciones fueron confirmadas. Las alucinaciones fueron refutadas (por ejemplo, DNS y traceroute no son métodos de host discovery).
 - **Conclusiones:** Los LLM como **Grok y Falcon** tienden a alucinar en temas técnicos si no se usan *prompts* estrictos. La ingeniería de *prompts* reduce errores pero no los elimina (ejemplo: Falcon).  
 - **Recomendación:** Siempre verificar en fuentes como la BDI y usar *prompts* con roles/especificidad para mejorar la fiabilidad académica en ciberseguridad y pentesting.
 
