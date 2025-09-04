@@ -199,7 +199,7 @@ El proyecto de investigación se propone para un periodo de 12 meses. La fase de
 
 ---
 
-## 7. Conclusiones
+## 6. Conclusiones
 
 La aplicación de técnicas de inteligencia artificial para la sistematización del tema de investigación ha demostrado ser una metodología eficaz que permite:
 
