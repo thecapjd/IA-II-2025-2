@@ -162,13 +162,13 @@ Desarrollo de sistemas adaptativos y de bajo consumo de recursos para la detecci
 
 3. Desarrollo de un módulo de respuesta automatizada que, al detectar un escaneo con alta confianza, active una política de seguridad dinámica, como la manipulación del TTL en las respuestas DNS dirigidas a la IP de origen sospechosa
 
-### ❗ Problema de Estudio
+### Problema de Estudio
 **Los sistemas de detección de intrusiones (IDS) actuales, tanto los basados en reglas estáticas como los que usan modelos de Machine Learning tradicionales, son cada vez más ineficaces.** No logran adaptarse a los cambios dinámicos del tráfico de red y son vulnerables a las técnicas de escaneo avanzadas y sigilosas utilizadas por los atacantes modernos. Además, las soluciones de IA más sofisticadas (ej. Bi-LSTM+Attention) presentan una alta complejidad y un elevado consumo de recursos computacionales, lo que las hace inviables para organizaciones con presupuestos limitados, como las PYMES. Esto crea una brecha de seguridad crítica: la necesidad de un sistema de detección que sea a la vez inteligente, adaptativo y eficiente en recursos.
 
-### 📝 Título Preliminar de la Investigación
+### Título Preliminar de la Investigación
 > **"Modelo Adaptativo para la Detección de Escaneo de Puertos Basado en Indicadores de Comportamiento y Aprendizaje Ligero"**
 
-### 📚 Título Tentativo de la Investigación  
+### Título Tentativo de la Investigación  
 > **"Sistema de Detección Adaptativo y de Bajo Consumo de Recursos para la Identificación de Ataques de Reconocimiento de Red Basado en Indicadores de Escaneo (IoS)"**
 
 ---
